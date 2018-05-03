@@ -20,5 +20,6 @@ RUN yarn cache clean
 EXPOSE 3000
 
 COPY screenshotr.js /screenshotr.js
+RUN chmod +x /screenshotr.js
 
 CMD ["/screenshotr.js"]
