@@ -1,18 +1,118 @@
-#!/usr/local/bin/node
-
+'use strict'
 
 const puppeteer = require('puppeteer');
-const express = require('express');
 const sharp = require('sharp');
-const app = express();
 
 var browser = false;
 
+var default_parameters = {
+    url: "",
+    vp_width: 1024,
+    vp_height: 768,
+    o_width: null,
+    o_height: null,
+    o_format: "png",
+    dom_element_selector: "",
+    fullpage: false
+};
+
 /**
- * Get a singleton browser instance
+ * Read parameters passed in the request and merge them with the default values
  */
-async function getBrowser(){
-    if( ! browser ){
+function readParameters(req){
+    var request_parameters = {};
+
+    if (req.query.url && "" != req.query.url) {
+        request_parameters.url = req.query.url;
+    }
+
+    if (req.query.o_format && "png" == req.query.o_format) {
+        request_parameters.o_format = "png";
+    }
+
+    if (req.query.o_format && "jpg" == req.query.o_format) {
+        request_parameters.o_format = "jpeg";
+    }
+
+    if (req.query.o_width && !isNaN(parseInt(req.query.o_width))) {
+        request_parameters.o_width = parseInt(req.query.o_width);
+    }
+
+    if (req.query.o_height && !isNaN(parseInt(req.query.o_height))) {
+        request_parameters.o_height = parseInt(req.query.o_height);
+    }
+
+    if ("fullpage" in req.query ){
+        request_parameters.fullpage = true;
+    }
+
+    if (req.query.vp_width && !isNaN(parseInt(req.query.vp_width))) {
+        request_parameters.vp_width = parseInt(req.query.vp_width);
+    }
+
+    if (req.query.vp_height && !isNaN(parseInt(req.query.vp_height))) {
+        request_parameters.vp_height = parseInt(req.query.vp_height);
+    }
+
+    if (req.query.dom_element_selector && "" != req.query.dom_element_selector) {
+        request_parameters.dom_element_selector = req.query.dom_element_selector;
+    }
+
+    return Object.assign({}, default_parameters, request_parameters);
+}
+
+async function makeScreenshot( params, page ){
+    await page.setViewport({
+        width: params.vp_width,
+        height: params.vp_height
+    });
+
+    await page.goto(params.url);
+
+
+    var elt;
+    if ("" != params.dom_element_selector) {
+        elt = await page.$(params.dom_element_selector);
+
+        if (!elt) {
+            elt = page;
+        }
+
+    } else {
+        elt = page;
+    }
+
+    return elt.screenshot({
+        fullPage: params.fullpage
+    });
+}
+
+async function outputScreenshot(params, img, response){
+    var sharp_img = sharp(img);
+
+    if (params.o_width || params.o_height) {
+        sharp_img = await sharp_img.resize(params.o_width, params.o_height);
+    }
+
+    response.set('Content-Type', 'image/' + params.o_format);
+    return response.send(await sharp_img.toFormat(params.o_format).toBuffer());
+}
+
+
+async function takeScreenshot(request, response) {
+    var params = readParameters(request);
+    var page = await getBrowserPage();
+    var img = await makeScreenshot(params, page);
+    await page.close();
+
+    return outputScreenshot(params, img, response);
+}
+
+/**
+ * Get a new page from a singleton browser instance
+ */
+async function getBrowserPage() {
+    if (!browser) {
         browser = await puppeteer.launch({
             args: [
                 '--no-sandbox',
@@ -21,104 +121,8 @@ async function getBrowser(){
         });
     }
 
-    return browser;
-}
-
-/**
- * Gets viewport width/height according to the default value
- * and parameters passed with the query
- */
-function getViewportDimensions( req ){
-    var dim = { width: 1024, height: 768 };
-
-    if (req.query.vp_width && !isNaN(parseInt(req.query.vp_width))){
-        dim.width = parseInt(req.query.vp_width);
-    }
-
-    if (req.query.vp_height && !isNaN(parseInt(req.query.vp_height))) {
-        dim.height = parseInt(req.query.vp_height);
-    }
-
-    return dim;
-}
-
-/**
- * Get the requested width of the output image
- */
-function getOutputWidth(req) {
-    if (req.query.o_width && !isNaN(parseInt(req.query.o_width))) {
-        return parseInt(req.query.o_width);
-    }
-
-    return null;
-}
-
-/**
- * Get the requested height of the output image
- */
-function getOutputHeight(req) {
-    if (req.query.o_height && !isNaN(parseInt(req.query.o_height))) {
-        return parseInt(req.query.o_height);
-    }
-
-    return null;
-}
-
-/**
- * Read the fullpage request parameter and return true or false
- */
-function getFullPageOption(req){
-    return req.query.fullpage ? true : false;
-}
-
-async function takeScreenshot(req, res){
-    const browser = await getBrowser();
-    const page = await browser.newPage();
-
-    await page.setViewport(getViewportDimensions(req) );
-
-    await page.goto(req.query.url).catch((error)=>console.log(error));
-
-
-    var elt;
-    if (req.query.dom_element_selector && "" != req.query.dom_element_selector ){
-        elt = await page.$(req.query.dom_element_selector);
-
-        if( ! elt ){
-            return res.status(503).send("Invalid dom_element_selector, no DOM element matched");
-        }
-
-    } else {
-        elt = page;
-    }
-
-
-    var img = await elt.screenshot({
-        fullPage: getFullPageOption(req)
-    });
-    img = sharp(img);
-
-    if( getOutputWidth(req) || getOutputHeight(req) ){
-        img = await img.resize(getOutputWidth(req), getOutputHeight(req));
-    }
-
-    await page.close();
-
-    res.set('Content-Type', 'image/png');
-    return res.send(await img.toFormat("png").toBuffer());
+    return browser.newPage();
 }
 
 
-/**
- * Parameters
- * url - url of the page to screenshot
- * vp_width - opt. set the viewport width in pixel (default: 1024px)
- * vp_height - opt. set the viewport height in pixel (default: 768px)
- * o_width - opt. set the width of the returned image (default: same as viewport width)
- * o_height - opt. set the height of the returned image (default: same as viewport height)
- * dom_element_selector - opt. the CSS selector of the element you want to screenshot, if you don't want the entire body
- * fullpage - opt. parameter must be present if you want a fullpage screenshot (not only the visible viewport part)
- */
-app.get("/screenshot", takeScreenshot);
-
-app.listen(3000);
+module.exports = takeScreenshot;
