@@ -42,7 +42,7 @@ function readParameters(req){
         request_parameters.o_height = parseInt(req.query.o_height);
     }
 
-    if ("fullpage" in req.query ){
+    if (req.query.fullpage && 1 == parseInt(req.query.fullpage)) {
         request_parameters.fullpage = true;
     }
 
