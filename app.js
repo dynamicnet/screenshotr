@@ -4,6 +4,11 @@ const express = require("express");
 const app = express();
 
 const screenshotr = require("./screenshotr");
+const pdfr = require("./pdfr");
+
+app.get('/', function (req, res) {
+    res.send('OK')
+});
 
 /**
  * HTTP Parameters :
@@ -17,5 +22,18 @@ const screenshotr = require("./screenshotr");
  * fullpage - opt. parameter must be present if you want a fullpage screenshot (not only the visible viewport part)
  */
 app.get("/screenshot", screenshotr);
+
+
+/**
+ * HTTP Parameters :
+ * url - url of the page to convert
+ * scale - opt. Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
+ * printBackground - opt. Print background graphics. Defaults to false.
+ * landscape - Paper orientation. Defaults to false.
+ * format - opt. Paper format. Defaults to 'A4'.
+ * delay - opt. Wait some time (in milliseconds) before converting. Defaults to 0.
+ * pageRanges - Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
+ */
+app.get("/pdf", pdfr);
 
 app.listen(3000);

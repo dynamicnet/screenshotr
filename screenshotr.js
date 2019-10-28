@@ -1,9 +1,7 @@
 'use strict'
 
-const puppeteer = require('puppeteer');
 const sharp = require('sharp');
-
-var browser = false;
+const browser = require('./browser');
 
 var default_parameters = {
     url: "",
@@ -101,27 +99,11 @@ async function outputScreenshot(params, img, response){
 
 async function takeScreenshot(request, response) {
     var params = readParameters(request);
-    var page = await getBrowserPage();
+    var page = await browser();
     var img = await makeScreenshot(params, page);
     await page.close();
 
     return outputScreenshot(params, img, response);
-}
-
-/**
- * Get a new page from a singleton browser instance
- */
-async function getBrowserPage() {
-    if (!browser) {
-        browser = await puppeteer.launch({
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
-        });
-    }
-
-    return browser.newPage();
 }
 
 
