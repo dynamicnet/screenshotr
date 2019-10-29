@@ -12,6 +12,8 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
 COPY screenshotr.js /screenshotr.js
 COPY pdfr.js /pdfr.js
 COPY browser.js /browser.js
+COPY docker_healthcheck.js /docker_healthcheck.js
+COPY healthcheck.js /healthcheck.js
 COPY app.js /app.js
 
 RUN yarn add express@4.17.1 \
@@ -21,9 +23,13 @@ RUN yarn add express@4.17.1 \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser \
     && chown -R pptruser:pptruser /node_modules \
-    && chmod +x /app.js
+    && chmod +x /app.js \
+    && chmod +x /docker_healthcheck.js
 
 RUN yarn cache clean
+
+HEALTHCHECK --interval=120s --timeout=15s --start-period=60s \
+    CMD node /docker_healthcheck.js
 
 USER pptruser
 

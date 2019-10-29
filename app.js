@@ -5,10 +5,13 @@ const app = express();
 
 const screenshotr = require("./screenshotr");
 const pdfr = require("./pdfr");
+const healthcheck = require("./healthcheck");
 
-app.get('/', function (req, res) {
-    res.send('OK')
+app.get('/probe', function( req, res ){
+    res.send("<html><head></head><body>Probe OK</body></html>");
 });
+
+app.get('/healthcheck', healthcheck);
 
 /**
  * HTTP Parameters :
