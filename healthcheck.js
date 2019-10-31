@@ -13,6 +13,8 @@ async function healthcheck(request, response) {
     } catch (e) {
         response.status(500).send('Something is broken ! (Exception during probe loading)');
         return;
+    } finally {
+        await page.close();
     }
 
     if( "Probe OK" != probe_str ){
