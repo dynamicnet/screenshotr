@@ -56,7 +56,7 @@ async function makePdf( params, page ){
     console.log("Converting " + params.url);
     console.log("Options: ", params);
 
-    await page.goto(params.url);
+    await page.goto(params.url, {waitUntil: "networkidle2"});
     if( params.delay > 0 ){
         await page.waitFor(params.delay);
     }

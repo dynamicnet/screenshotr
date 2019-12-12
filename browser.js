@@ -10,6 +10,7 @@ let browser = false;
 async function getBrowserPage() {
     if (!browser) {
         browser = await puppeteer.launch({
+            devtools: false,
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox'
@@ -18,7 +19,7 @@ async function getBrowserPage() {
     }
 
     let page = await browser.newPage();
-    page.waitForNavigation({waitUntil: "networkidle2"});
+
     return page;
 }
 

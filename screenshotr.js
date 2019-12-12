@@ -65,7 +65,7 @@ async function makeScreenshot( params, page ){
         height: params.vp_height
     });
 
-    await page.goto(params.url);
+    await page.goto(params.url, {waitUntil: "networkidle2"});
 
 
     var elt;
