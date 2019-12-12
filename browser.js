@@ -17,7 +17,9 @@ async function getBrowserPage() {
         });
     }
 
-    return browser.newPage();
+    let page = await browser.newPage();
+    page.waitForNavigation({waitUntil: "networkidle2"});
+    return page;
 }
 
 
