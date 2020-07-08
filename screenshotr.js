@@ -11,7 +11,8 @@ var default_parameters = {
     o_height: null,
     o_format: "png",
     dom_element_selector: "",
-    fullpage: false
+    fullpage: false,
+    delay: 0
 };
 
 /**
@@ -56,6 +57,10 @@ function readParameters(req){
         request_parameters.dom_element_selector = req.query.dom_element_selector;
     }
 
+    if (req.query.delay && parseInt(req.query.delay) > 0) {
+        request_parameters.delay = parseInt(req.query.delay);
+    }
+
     return Object.assign({}, default_parameters, request_parameters);
 }
 
@@ -66,6 +71,9 @@ async function makeScreenshot( params, page ){
     });
 
     await page.goto(params.url, {waitUntil: "networkidle2"});
+    if( params.delay > 0 ){
+        await page.waitFor(params.delay);
+    }
 
 
     var elt;
