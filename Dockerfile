@@ -1,13 +1,19 @@
 FROM node:10-slim
 
+# Install utilities and libraries
+RUN apt-get update && apt-get install -y ca-certificates gnupg2 wget \
+    libxtst6 libxss1 \
+    --no-install-recommends
+
 # Install latest chrome package.
-RUN apt-get update && apt-get install -y ca-certificates gnupg2 wget --no-install-recommends \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
     && apt-get update \
     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+    --no-install-recommends
+
+# Clean our room
+RUN rm -rf /var/lib/apt/lists/*
 
 RUN yarn add express@4.17.1 \
     && yarn add sharp@0.23.4 \
