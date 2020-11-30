@@ -14,6 +14,13 @@ app.get('/probe', function( req, res ){
 app.get('/healthcheck', healthcheck);
 
 /**
+ * Common HTTP Parameters
+ *
+ * username - Username for HTTP auth basic authentication
+ * password - Password for HTTP auth basic authentication
+ */
+
+/**
  * HTTP Parameters :
  * url - url of the page to screenshot
  * vp_width - opt. set the viewport width in pixel (default: 1024px)

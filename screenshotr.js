@@ -5,6 +5,8 @@ const browser = require('./browser');
 
 var default_parameters = {
     url: "",
+    username: null,
+    password: null,
     vp_width: 1024,
     vp_height: 768,
     o_width: null,
@@ -23,6 +25,14 @@ function readParameters(req){
 
     if (req.query.url && "" != req.query.url) {
         request_parameters.url = req.query.url;
+    }
+
+    if (req.query.username && null != req.query.username) {
+        request_parameters.username = req.query.username;
+    }
+
+    if (req.query.password && null != req.query.password) {
+        request_parameters.password = req.query.password;
     }
 
     if (req.query.o_format && "png" == req.query.o_format) {
@@ -69,6 +79,13 @@ async function makeScreenshot( params, page ){
         width: params.vp_width,
         height: params.vp_height
     });
+
+    if (null != params.username && null != params.password) {
+        await page.authenticate({
+            username: params.username,
+            password: params.password
+        });
+    }
 
     await page.goto(params.url, {waitUntil: "networkidle2"});
     if( params.delay > 0 ){

@@ -5,6 +5,8 @@ const browser = require('./browser');
 
 var default_parameters = {
     url: "",
+    username: null,
+    password: null,
     scale: 1,
     printBackground: false,
     landscape: false,
@@ -23,6 +25,14 @@ function readParameters(req){
 
     if (req.query.url && "" != req.query.url) {
         request_parameters.url = req.query.url;
+    }
+
+    if (req.query.username && null != req.query.username) {
+        request_parameters.username = req.query.username;
+    }
+
+    if (req.query.password && null != req.query.password) {
+        request_parameters.password = req.query.password;
     }
 
     if (req.query.scale && !isNaN(parseFloat(req.query.scale))) {
@@ -55,6 +65,13 @@ function readParameters(req){
 async function makePdf( params, page ){
     console.log("Converting " + params.url);
     console.log("Options: ", params);
+
+    if (null != params.username && null != params.password) {
+        await page.authenticate({
+            username: params.username,
+            password: params.password
+        });
+    }
 
     await page.goto(params.url, {waitUntil: "networkidle2"});
     if( params.delay > 0 ){

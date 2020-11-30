@@ -20,6 +20,8 @@ curl http://127.0.0.1:3000/pdf?url=https://github.com/ > github.pdf
 Name | Type | Description
 ---- | ---- | -----------
 url | required string | url of the page to screenshot
+username | opt. string | Username for HTTP auth basic authentication
+password | opt. string | Password for HTTP auth basic authentication
 vp_width | opt. int | set the viewport width in pixel. Defaults to 1024
 vp_height | opt. int | set the viewport height in pixel. Defaults to 768
 o_width | opt. int | set the width of the returned image. Default to the viewport width
@@ -32,6 +34,8 @@ fullpage | opt. int (0\|1) | "1" to take a screenshot of the fullpage, "0" to ta
 Name | Type | Description
 ---- | ---- | -----------
 url | required string | url of the page to screenshot
+username | opt. string | Username for HTTP auth basic authentication
+password | opt. string | Password for HTTP auth basic authentication
 scale | opt. float | Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
 printBackground | opt. bool | Print background graphics. Defaults to false.
 landscape | opt. bool | Paper orientation. Defaults to false.
