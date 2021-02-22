@@ -1,4 +1,4 @@
-FROM node:10-slim
+FROM node:14-slim
 
 # Install utilities and libraries
 RUN apt-get update && apt-get install -y ca-certificates gnupg2 wget \
@@ -16,8 +16,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN yarn add express@4.17.1 \
-    && yarn add sharp@0.23.4 \
-    && yarn add puppeteer@2.0.0 \
+    && yarn add sharp@0.27.1 \
+    && yarn add puppeteer@7.1.0 \
     && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser \
