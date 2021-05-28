@@ -9,7 +9,10 @@ let browser = false;
  */
 async function getBrowserPage() {
     if (!browser) {
+        const ignoreHTTPSErrors = process.env.IGNORE_HTTPS_ERRORS || false;
+
         browser = await puppeteer.launch({
+            ignoreHTTPSErrors: ignoreHTTPSErrors,
             devtools: false,
             args: [
                 '--no-sandbox',

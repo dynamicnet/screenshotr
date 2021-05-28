@@ -42,3 +42,8 @@ landscape | opt. bool | Paper orientation. Defaults to false.
 format | opt. string | Paper format. Defaults to 'A4'.
 delay | opt. int | Wait some time (in milliseconds) before converting. Defaults to 0.
 pageRanges | opt. string | Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
+
+## Environments variables
+Name | Description
+---- | -----------
+IGNORE_HTTPS_ERRORS | If set, the launched browser will not complaint about invalid certifcate. Designed mainly for development environment that use self signed certifacate or [Caddy Local Authority](https://caddyserver.com/docs/automatic-https#local-https)
