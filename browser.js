@@ -12,6 +12,8 @@ async function getBrowserPage() {
         const ignoreHTTPSErrors = process.env.IGNORE_HTTPS_ERRORS || false;
 
         browser = await puppeteer.launch({
+            headless: 'new',
+            executablePath: 'google-chrome-stable',
             ignoreHTTPSErrors: ignoreHTTPSErrors,
             devtools: false,
             args: [
