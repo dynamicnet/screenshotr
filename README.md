@@ -42,6 +42,8 @@ landscape | opt. bool | Paper orientation. Defaults to false.
 format | opt. string | Paper format. Defaults to 'A4'.
 delay | opt. int | Wait some time (in milliseconds) before converting. Defaults to 0.
 pageRanges | opt. string | Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
+headerTemplate | opt. string | HTML template for the print header.
+footerTemplate | opt. string | HTML template for the print footer.
 
 ## Environments variables
 Name | Description

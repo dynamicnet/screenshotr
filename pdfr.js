@@ -12,7 +12,10 @@ var default_parameters = {
     landscape: false,
     format: "A4",
     delay: 0,
-    pageRanges: ""
+    pageRanges: "",
+    headerTemplate: null,
+    footerTemplate: null,
+    displayHeaderFooter: false,
 };
 
 /**
@@ -57,6 +60,18 @@ function readParameters(req){
 
     if (req.query.pageRanges && "" != req.query.pageRanges) {
         request_parameters.pageRanges = req.query.pageRanges;
+    }
+
+    if (req.query.headerTemplate && "" != req.query.headerTemplate) {
+        request_parameters.headerTemplate = req.query.headerTemplate;
+    }
+
+    if (req.query.footerTemplate && "" != req.query.footerTemplate) {
+        request_parameters.footerTemplate = req.query.footerTemplate;
+    }
+
+    if (request_parameters.headerTemplate || request_parameters.footerTemplate) {
+        request_parameters.displayHeaderFooter = true;
     }
 
     return Object.assign({}, default_parameters, request_parameters);
