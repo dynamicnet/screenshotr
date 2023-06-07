@@ -13,8 +13,8 @@ var default_parameters = {
     format: "A4",
     delay: 0,
     pageRanges: "",
-    headerTemplate: null,
-    footerTemplate: null,
+    headerTemplate: "",
+    footerTemplate: "",
     displayHeaderFooter: false,
 };
 
