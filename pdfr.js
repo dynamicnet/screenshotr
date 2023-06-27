@@ -16,6 +16,7 @@ var default_parameters = {
     headerTemplate: "",
     footerTemplate: "",
     displayHeaderFooter: false,
+    margin: null,
 };
 
 /**
@@ -72,6 +73,26 @@ function readParameters(req){
 
     if (request_parameters.headerTemplate || request_parameters.footerTemplate) {
         request_parameters.displayHeaderFooter = true;
+    }
+
+    if (req.query.margin) {
+        request_parameters.margin = {}
+
+        if (req.query.margin["top"]) {
+            request_parameters.margin.top = req.query.margin["top"]
+        }
+
+        if (req.query.margin["bottom"]) {
+            request_parameters.margin.bottom = req.query.margin["bottom"]
+        }
+
+        if (req.query.margin["left"]) {
+            request_parameters.margin.left = req.query.margin["left"]
+        }
+
+        if (req.query.margin["right"]) {
+            request_parameters.margin.right = req.query.margin["right"]
+        }
     }
 
     return Object.assign({}, default_parameters, request_parameters);

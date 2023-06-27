@@ -19,7 +19,7 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 RUN yarn add express@4.18.2 \
     && yarn add sharp@0.32.1 \
-    && yarn add puppeteer@20.5.0 \
+    && yarn add puppeteer@20.7.3 \
     && groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
     && mkdir -p /home/pptruser/Downloads \
     && chown -R pptruser:pptruser /home/pptruser \

@@ -44,6 +44,7 @@ delay | opt. int | Wait some time (in milliseconds) before converting. Defaults 
 pageRanges | opt. string | Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
 headerTemplate | opt. string | HTML template for the print header.
 footerTemplate | opt. string | HTML template for the print footer.
+margin | opt. map | Keys: "top", "right", "bottom", "left". Values: string
 
 ## Environments variables
 Name | Description
