@@ -14,7 +14,6 @@ const default_parameters = {
     o_format: "png",
     dom_element_selector: "",
     fullpage: false,
-    delay: 0
 };
 
 /**
@@ -67,14 +66,13 @@ function readParameters(req){
         request_parameters.dom_element_selector = req.query.dom_element_selector;
     }
 
-    if (req.query.delay && parseInt(req.query.delay) > 0) {
-        request_parameters.delay = parseInt(req.query.delay);
-    }
-
     return Object.assign({}, default_parameters, request_parameters);
 }
 
 async function makeScreenshot( params, page ){
+    console.log("Screenshoting " + params.url);
+    console.log("Options: ", params);
+
     await page.setViewport({
         width: params.vp_width,
         height: params.vp_height
@@ -88,12 +86,8 @@ async function makeScreenshot( params, page ){
     }
 
     await page.goto(params.url, {waitUntil: "networkidle2"});
-    if( params.delay > 0 ){
-        await page.waitFor(params.delay);
-    }
 
-
-    var elt;
+    let elt;
     if ("" != params.dom_element_selector) {
         elt = await page.$(params.dom_element_selector);
 
@@ -111,7 +105,7 @@ async function makeScreenshot( params, page ){
 }
 
 async function outputScreenshot(params, img, response){
-    var sharp_img = sharp(img);
+    let sharp_img = sharp(img);
 
     if (params.o_width || params.o_height) {
         sharp_img = await sharp_img.resize(params.o_width, params.o_height);
@@ -136,7 +130,6 @@ async function takeScreenshot(request, response) {
 	} finally {
 		await page.close()
 	}
-
 }
 
 export {

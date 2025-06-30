@@ -10,7 +10,6 @@ const default_parameters = {
     printBackground: false,
     landscape: false,
     format: "A4",
-    delay: 0,
     pageRanges: "",
     headerTemplate: "",
     footerTemplate: "",
@@ -52,10 +51,6 @@ function readParameters(req){
 
     if (req.query.format && page_formats.indexOf(req.query.format) > -1) {
         request_parameters.format = req.query.format;
-    }
-
-    if (req.query.delay && parseInt(req.query.delay) > 0) {
-        request_parameters.delay = parseInt(req.query.delay);
     }
 
     if (req.query.pageRanges && "" != req.query.pageRanges) {
@@ -109,9 +104,6 @@ async function makePdf( params, page ){
     }
 
     await page.goto(params.url, {waitUntil: "networkidle2"});
-    if( params.delay > 0 ){
-        await page.waitFor(params.delay);
-    }
 
     return page.pdf(params);
 }

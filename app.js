@@ -44,7 +44,6 @@ app.get("/screenshot", screenshotr);
  * printBackground - opt. Print background graphics. Defaults to false.
  * landscape - Paper orientation. Defaults to false.
  * format - opt. Paper format. Defaults to 'A4'.
- * delay - opt. Wait some time (in milliseconds) before converting. Defaults to 0.
  * pageRanges - Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
  */
 app.get("/pdf", pdfr);
