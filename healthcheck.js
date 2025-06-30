@@ -1,7 +1,6 @@
 'use strict'
 
-const browser = require('./browser');
-
+import browser from './browser.js'
 
 async function healthcheck(request, response) {
 
@@ -25,4 +24,6 @@ async function healthcheck(request, response) {
     response.status(200).send('OK ('+probe_str+')');
 }
 
-module.exports = healthcheck;
+export {
+	healthcheck as default,
+}

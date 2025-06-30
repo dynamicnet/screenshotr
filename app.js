@@ -1,11 +1,14 @@
-#!/usr/bin/env node
-
-const express = require("express");
+import express from "express"
+import qs from "qs"
 const app = express();
 
-const screenshotr = require("./screenshotr");
-const pdfr = require("./pdfr");
-const healthcheck = require("./healthcheck");
+import screenshotr from "./screenshotr.js"
+import pdfr from "./pdfr.js"
+import healthcheck from "./healthcheck.js"
+
+app.set("query parser", function (str) {
+  return qs.parse(str)
+})
 
 app.get('/probe', function( req, res ){
     res.send("<html><head></head><body>Probe OK</body></html>");

@@ -1,9 +1,8 @@
 'use strict'
 
-const browser = require('./browser');
+import browser from './browser.js'
 
-
-var default_parameters = {
+const default_parameters = {
     url: "",
     username: null,
     password: null,
@@ -78,20 +77,20 @@ function readParameters(req){
     if (req.query.margin) {
         request_parameters.margin = {}
 
-        if (req.query.margin["top"]) {
-            request_parameters.margin.top = req.query.margin["top"]
+        if (req.query.margin.top) {
+            request_parameters.margin.top = req.query.margin.top
         }
 
-        if (req.query.margin["bottom"]) {
-            request_parameters.margin.bottom = req.query.margin["bottom"]
+        if (req.query.margin.bottom) {
+            request_parameters.margin.bottom = req.query.margin.bottom
         }
 
-        if (req.query.margin["left"]) {
-            request_parameters.margin.left = req.query.margin["left"]
+        if (req.query.margin.left) {
+            request_parameters.margin.left = req.query.margin.left
         }
 
-        if (req.query.margin["right"]) {
-            request_parameters.margin.right = req.query.margin["right"]
+        if (req.query.margin.right) {
+            request_parameters.margin.right = req.query.margin.right
         }
     }
 
@@ -124,12 +123,23 @@ async function outputPdf(pdf, response){
 
 
 async function convertToPdf(request, response) {
-    var params = readParameters(request);
-    var page = await browser();
-    var pdf = await makePdf(params, page);
-    await page.close();
+	let page
 
-    return outputPdf(pdf, response);
+	try {
+		const params = readParameters(request)
+		page = await browser()
+		const pdf = await makePdf(params, page)
+
+		return outputPdf(pdf, response)
+	} catch (error) {
+		console.log(error)
+		return
+	} finally {
+		await page.close()
+	}
 }
 
-module.exports = convertToPdf;
+
+export {
+	convertToPdf as default,
+}

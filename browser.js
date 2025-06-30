@@ -1,6 +1,6 @@
 'use strict'
 
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer'
 
 let browser = false;
 
@@ -12,8 +12,7 @@ async function getBrowserPage() {
         const ignoreHTTPSErrors = process.env.IGNORE_HTTPS_ERRORS || false;
 
         browser = await puppeteer.launch({
-            headless: 'new',
-            executablePath: 'google-chrome-stable',
+            headless: true,
             ignoreHTTPSErrors: ignoreHTTPSErrors,
             devtools: false,
             args: [
@@ -28,5 +27,6 @@ async function getBrowserPage() {
     return page;
 }
 
-
-module.exports = getBrowserPage;
+export {
+	getBrowserPage as default,
+}

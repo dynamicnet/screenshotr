@@ -1,9 +1,9 @@
 'use strict'
 
-const sharp = require('sharp');
-const browser = require('./browser');
+import sharp from 'sharp'
+import browser from './browser.js'
 
-var default_parameters = {
+const default_parameters = {
     url: "",
     username: null,
     password: null,
@@ -123,13 +123,22 @@ async function outputScreenshot(params, img, response){
 
 
 async function takeScreenshot(request, response) {
-    var params = readParameters(request);
-    var page = await browser();
-    var img = await makeScreenshot(params, page);
-    await page.close();
+	let page
+	try {
+		const params = readParameters(request)
+		page = await browser()
+		const img = await makeScreenshot(params, page)
 
-    return outputScreenshot(params, img, response);
+		return outputScreenshot(params, img, response);
+	} catch (error) {
+		console.log(error)
+		return
+	} finally {
+		await page.close()
+	}
+
 }
 
-
-module.exports = takeScreenshot;
+export {
+	takeScreenshot as default,
+}
