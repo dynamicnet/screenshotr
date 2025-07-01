@@ -1,11 +1,12 @@
 import express from "express"
 import qs from "qs"
-const app = express();
 
 import screenshotr from "./screenshotr.js"
 import pdfr from "./pdfr.js"
 import healthcheck from "./healthcheck.js"
 
+
+const app = express();
 app.set("query parser", function (str) {
   return qs.parse(str)
 })
@@ -34,7 +35,7 @@ app.get('/healthcheck', healthcheck);
  * dom_element_selector - opt. the CSS selector of the element you want to screenshot, if you don't want the entire body
  * fullpage - opt. parameter must be present if you want a fullpage screenshot (not only the visible viewport part)
  */
-app.get("/screenshot", screenshotr);
+ app.get("/screenshot", screenshotr);
 
 
 /**

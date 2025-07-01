@@ -1,7 +1,7 @@
 'use strict'
 
 import sharp from 'sharp'
-import browser from './browser.js'
+import cluster from './cluster.js'
 
 const default_parameters = {
     url: "",
@@ -69,27 +69,27 @@ function readParameters(req){
     return Object.assign({}, default_parameters, request_parameters);
 }
 
-async function makeScreenshot( params, page ){
-    console.log("Screenshoting " + params.url);
-    console.log("Options: ", params);
+async function makeScreenshot({page, data, worker}) {
+    console.log(`Screenshoting ${data.url} using worker ${worker.id}`);
+    console.log("Options: ", data);
 
     await page.setViewport({
-        width: params.vp_width,
-        height: params.vp_height
+        width: data.vp_width,
+        height: data.vp_height
     });
 
-    if (null != params.username && null != params.password) {
+    if (null != data.username && null != data.password) {
         await page.authenticate({
-            username: params.username,
-            password: params.password
+            username: data.username,
+            password: data.password
         });
     }
 
-    await page.goto(params.url, {waitUntil: "networkidle2"});
+    await page.goto(data.url, {waitUntil: "networkidle2"});
 
     let elt;
-    if ("" != params.dom_element_selector) {
-        elt = await page.$(params.dom_element_selector);
+    if ("" != data.dom_element_selector) {
+        elt = await page.$(data.dom_element_selector);
 
         if (!elt) {
             elt = page;
@@ -100,11 +100,11 @@ async function makeScreenshot( params, page ){
     }
 
     return elt.screenshot({
-        fullPage: params.fullpage
+        fullPage: data.fullpage
     });
 }
 
-async function outputScreenshot(params, img, response){
+async function outputScreenshot(params, img, response) {
     let sharp_img = sharp(img);
 
     if (params.o_width || params.o_height) {
@@ -115,20 +115,16 @@ async function outputScreenshot(params, img, response){
     return response.send(await sharp_img.toFormat(params.o_format).toBuffer());
 }
 
-
 async function takeScreenshot(request, response) {
-	let page
+	const c = await cluster();
 	try {
 		const params = readParameters(request)
-		page = await browser()
-		const img = await makeScreenshot(params, page)
+		const img = await c.execute(params, makeScreenshot)
 
 		return outputScreenshot(params, img, response);
 	} catch (error) {
 		console.log(error)
 		return
-	} finally {
-		await page.close()
 	}
 }
 

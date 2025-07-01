@@ -1,6 +1,6 @@
 'use strict'
 
-import browser from './browser.js'
+import cluster from './cluster.js'
 
 const default_parameters = {
     url: "",
@@ -92,20 +92,20 @@ function readParameters(req){
     return Object.assign({}, default_parameters, request_parameters);
 }
 
-async function makePdf( params, page ){
-    console.log("Converting " + params.url);
-    console.log("Options: ", params);
+async function makePdf({page, data, worker}) {
+	console.log(`Converting ${data.url} using worker ${worker.id}`);
+    console.log("Options: ", data);
 
-    if (null != params.username && null != params.password) {
+    if (null != data.username && null != data.password) {
         await page.authenticate({
-            username: params.username,
-            password: params.password
+            username: data.username,
+            password: data.password
         });
     }
 
-    await page.goto(params.url, {waitUntil: "networkidle2"});
+    await page.goto(data.url, {waitUntil: "networkidle2"});
 
-    return page.pdf(params);
+    return page.pdf(data);
 }
 
 async function outputPdf(pdf, response){
@@ -113,24 +113,19 @@ async function outputPdf(pdf, response){
     return response.send(pdf);
 }
 
-
 async function convertToPdf(request, response) {
-	let page
+	const c = await cluster();
 
 	try {
 		const params = readParameters(request)
-		page = await browser()
-		const pdf = await makePdf(params, page)
+		const pdf = await c.execute(params, makePdf)
 
 		return outputPdf(pdf, response)
 	} catch (error) {
 		console.log(error)
 		return
-	} finally {
-		await page.close()
 	}
 }
-
 
 export {
 	convertToPdf as default,
