@@ -51,5 +51,5 @@ margin | map<br>*optional* | Keys: "top", "right", "bottom", "left".<br>Values: 
 Name | Description
 ---- | -----------
 IGNORE_HTTPS_ERRORS | If set, the launched browser will not complaint about invalid certifcate. Designed mainly for development environment that use self signed certifacate or [Caddy Local Authority](https://caddyserver.com/docs/automatic-https#local-https)
-HTTP_AUTH_BASIC_USER | Protection of /pdf and /screenshot endpoints, the username to be used for the HTTP Basic Auth
-HTTP_AUTH_BASIC_PWD | Protection of /pdf and /screenshot endpoints, the password to be used for the HTTP Basic Auth
+HTTP_AUTH_BASIC_USER | Protection of `/pdf` and `/screenshot` endpoints, the username to be used for the HTTP Basic Auth
+HTTP_AUTH_BASIC_PWD | Protection of `/pdf` and `/screenshot` endpoints, the password to be used for the HTTP Basic Auth
