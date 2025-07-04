@@ -1,7 +1,7 @@
 FROM ghcr.io/puppeteer/puppeteer:24.11.1
 USER root
 
-ENV NODE_OPTIONS "--dns-result-order=ipv4first"
+ENV NODE_OPTIONS="--dns-result-order=ipv4first"
 
 RUN npm i --save express@5.1.0 \
     && npm i --save sharp@0.34.2 \
@@ -19,6 +19,7 @@ COPY screenshotr.js screenshotr.js
 COPY pdfr.js pdfr.js
 COPY docker_healthcheck.js docker_healthcheck.js
 COPY healthcheck.js healthcheck.js
+COPY basic-auth.js basic-auth.js
 COPY app.js app.js
 
 EXPOSE 3000

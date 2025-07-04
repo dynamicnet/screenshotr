@@ -4,9 +4,11 @@ import qs from "qs"
 import screenshotr from "./screenshotr.js"
 import pdfr from "./pdfr.js"
 import healthcheck from "./healthcheck.js"
-
+import authentication from "./basic-auth.js"
 
 const app = express();
+const router = express.Router()
+
 app.set("query parser", function (str) {
   return qs.parse(str)
 })
@@ -35,7 +37,8 @@ app.get('/healthcheck', healthcheck);
  * dom_element_selector - opt. the CSS selector of the element you want to screenshot, if you don't want the entire body
  * fullpage - opt. parameter must be present if you want a fullpage screenshot (not only the visible viewport part)
  */
- app.get("/screenshot", screenshotr);
+ router.use("/screenshot", authentication);
+ router.get("/screenshot", screenshotr);
 
 
 /**
@@ -47,6 +50,8 @@ app.get('/healthcheck', healthcheck);
  * format - opt. Paper format. Defaults to 'A4'.
  * pageRanges - Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
  */
-app.get("/pdf", pdfr);
+router.use("/pdf", authentication);
+router.get("/pdf", pdfr);
 
+app.use('/', router)
 app.listen(3000);
