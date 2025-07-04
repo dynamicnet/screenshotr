@@ -1,6 +1,6 @@
 # Screenshot and PDF converter
 
-Dockerized node webservice that take screenshot of webpage or convert it to PDF
+Dockerized NodeJS webservice that take screenshot of webpage or convert them to PDF. A simple ExpressJS service that wrap Puppeteer.
 
 ```
 # Launch Container
@@ -15,35 +15,37 @@ curl http://127.0.0.1:3000/pdf?url=https://github.com/ > github.pdf
 ```
 
 
-## Parameters
-### endpoint /screenshot
-Name | Type | Description
----- | ---- | -----------
-url | required string | url of the page to screenshot
-username | opt. string | Username for HTTP auth basic authentication
-password | opt. string | Password for HTTP auth basic authentication
-vp_width | opt. int | set the viewport width in pixel. Defaults to 1024
-vp_height | opt. int | set the viewport height in pixel. Defaults to 768
-o_width | opt. int | set the width of the returned image. Default to the viewport width
-o_height | opt. int | set the height of the returned image. Default to the viewport height
-o_format | opt. string (png\|jpg) | set image format for the returned image. Defaults to png
-dom_element_selector | opt. string | a CSS selector of the element you want to screenshot, only if you don't want to screenshot the entire page
-fullpage | opt. int (0\|1) | "1" to take a screenshot of the fullpage, "0" to take a screenshot of the viewport only. Default to 0
+## Endpoints and parameters
+The service offers 2 main endpoints.
 
-### endpoint /pdf
+### endpoint `GET /screenshot`
 Name | Type | Description
 ---- | ---- | -----------
-url | required string | url of the page to screenshot
-username | opt. string | Username for HTTP auth basic authentication
-password | opt. string | Password for HTTP auth basic authentication
-scale | opt. float | Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
-printBackground | opt. bool | Print background graphics. Defaults to false.
-landscape | opt. bool | Paper orientation. Defaults to false.
-format | opt. string | Paper format. Defaults to 'A4'.
-pageRanges | opt. string | Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
-headerTemplate | opt. string | HTML template for the print header.
-footerTemplate | opt. string | HTML template for the print footer.
-margin | opt. map | Keys: "top", "right", "bottom", "left". Values: string
+url | string<br>**required** | url of the page to screenshot
+username | string<br>*optional* | Username for HTTP auth basic authentication
+password | string<br>*optional* | Password for HTTP auth basic authentication
+vp_width | integer<br>*optional* | set the viewport width in pixel. Defaults to 1024
+vp_height | integer<br>*optional* | set the viewport height in pixel. Defaults to 768
+o_width | integer<br>*optional* | set the width of the returned image. Default to the viewport width
+o_height | integer<br>*optional* | set the height of the returned image. Default to the viewport height
+o_format | string (one of png \| jpg)<br>*optional* | set image format for the returned image. Defaults to png
+dom_element_selector | string<br>*optional* | a CSS selector of the element you want to screenshot, only if you don't want to screenshot the entire page
+fullpage | integer (0 \| 1)<br>*optional* | "1" to take a screenshot of the fullpage, "0" to take a screenshot of the viewport only. Default to 0
+
+### endpoint `GET /pdf`
+Name | Type | Description
+---- | ---- | -----------
+url | string<br>**required** | url of the page to screenshot
+username | string<br>*optional* | Username for HTTP auth basic authentication
+password | string<br>*optional* | Password for HTTP auth basic authentication
+scale | float<br>*optional* | Scale of the webpage rendering. Defaults to 1. Scale amount must be between 0.1 and 2.
+printBackground | bool<br>*optional* | Print background graphics. Defaults to false.
+landscape | bool<br>*optional* | Paper orientation. Defaults to false.
+format | string<br>*optional* | Paper format. Defaults to 'A4'.
+pageRanges | string<br>*optional* | Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print all pages.
+headerTemplate | string<br>*optional* | HTML template for the print header.
+footerTemplate | string<br>*optional* | HTML template for the print footer.
+margin | map<br>*optional* | Keys: "top", "right", "bottom", "left".<br>Values: string
 
 ## Environments variables
 Name | Description
